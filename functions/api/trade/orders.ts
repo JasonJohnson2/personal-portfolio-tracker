@@ -1,0 +1,4 @@
+function corsHeaders(){return {'content-type':'application/json; charset=utf-8','access-control-allow-origin':'*','access-control-allow-headers':'content-type, authorization','access-control-allow-methods':'GET, POST, OPTIONS'};}
+export const onRequestOptions: PagesFunction = async ()=> new Response(null,{headers:corsHeaders()});
+export const onRequestGet: PagesFunction = async (ctx)=>{try{const u=new URL(ctx.request.url);const status=u.searchParams.get('status')||'all';const r=await fetch(`https://paper-api.alpaca.markets/v2/orders?status=${encodeURIComponent(status)}&limit=50`,{headers:{'APCA-API-KEY-ID':ctx.env.ALPACA_KEY_ID,'APCA-API-SECRET-KEY':ctx.env.ALPACA_SECRET_KEY}});const d=await r.json();if(!r.ok)return new Response(JSON.stringify({'error':d}),{status:r.status,headers:corsHeaders()});return new Response(JSON.stringify(d),{headers:corsHeaders()});}
+catch(e){return new Response(JSON.stringify({'error':String(e)}),{status:500,headers:corsHeaders()})}};

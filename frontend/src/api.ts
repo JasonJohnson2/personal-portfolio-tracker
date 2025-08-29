@@ -1,0 +1,5 @@
+export async function getPositions(){const r=await fetch('/api/positions'); if(!r.ok) throw new Error('Failed'); return r.json();}
+export async function upsertPosition(p:{accountId:string;symbol:string;type:'equity'|'crypto';qty:number;avgCost:number;}){const r=await fetch('/api/positions',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(p)}); if(!r.ok) throw new Error('Failed');}
+export async function getPrices(symbols:string[]){const q=symbols.join(','); const r=await fetch(`/api/prices?symbols=${encodeURIComponent(q)}`); if(!r.ok) throw new Error('Failed'); return r.json();}
+export async function placePaperOrder(p:{symbol:string; side:'buy'|'sell'; qty:number; type?:'market'|'limit'; limit_price?:number}){ const r = await fetch('/api/trade/place', { method:'POST', headers:{'content-type':'application/json'}, body: JSON.stringify(p)}); if(!r.ok) throw new Error('Failed to place order'); return r.json(); }
+export async function listPaperOrders(status:string='all'){ const r = await fetch(`/api/trade/orders?status=${encodeURIComponent(status)}`); if(!r.ok) throw new Error('Failed to list orders'); return r.json(); }
