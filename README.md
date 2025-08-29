@@ -6,6 +6,8 @@
 - **Trading**: Alpaca paper endpoints
 - **Screener**: basic price band
 
+<!-- trigger pages -->
+
 ## Quick start (local)
 ```bash
 npm i -g wrangler
