@@ -3,5 +3,5 @@ compatibility_date = "2025-08-01"
 pages_build_output_dir = "frontend/dist"
 [[d1_databases]]
 binding = "PORTFOLIO_DB"
-database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+database_id = "d0c966d4-2f87-4a23-81a8-5d5677aaa6b8"
 database_name = "portfolio_tracker_db"
