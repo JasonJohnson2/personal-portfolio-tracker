@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
 import { getPositions, getPrices, upsertPosition, placePaperOrder, listPaperOrders } from './api'
 
+import WatchlistsPanel from './WatchlistsPanel'
+import ScreenerPanel from './ScreenerPanel'
+
 function TradeControls({ symbol }: { symbol: string }){
   const [qty, setQty] = useState(1)
   const [busy, setBusy] = useState<'buy'|'sell'|null>(null)
@@ -33,6 +36,8 @@ export default function App(){
   useEffect(()=>{(async()=>{const data=await getPositions(); setRows(data); const syms=Array.from(new Set(data.map((r:any)=>r.symbol))); if(syms.length){const pm=await getPrices(syms); setPriceMap(pm)}})()},[])
   const enriched=useMemo(()=>rows.map(r=>{const mkt=priceMap[r.symbol]??null; const value=mkt?Number(mkt)*Number(r.qty):null; const cost=Number(r.avg_cost)*Number(r.qty); const upnl=value!==null? value-cost:null; const upnlPct=value!==null? (upnl!/cost)*100:null; return {...r,mkt,value,cost,upnl,upnlPct}}),[rows,priceMap])
   const total=useMemo(()=>enriched.reduce((a,r)=>a+(r.value??0),0),[enriched])
+  const [activeWatchlistId, setActiveWatchlistId] = useState<string | undefined>(undefined)
+
   return (<div className="container">
     <h1>Portfolio Tracker</h1>
     <AddPosition/>
@@ -42,6 +47,19 @@ export default function App(){
     </tbody></table></div>
     <OrdersPanel/>
   </div>)
+
+  // inside your default App() component's return:
+<div className='container'>
+  <h1>Portfolio Tracker</h1>
+
+  <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:16}}>
+    <WatchlistsPanel onPick={setActiveWatchlistId} />
+    <ScreenerPanel watchlistId={activeWatchlistId} />
+  </div>
+
+  {/* existing AddPosition, Positions table, OrdersPanel ... */}
+</div>
+
 }
 
 function AddPosition(){
